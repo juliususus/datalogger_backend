@@ -1,11 +1,9 @@
+from ILogger import ILogger
+
 import sys
 sys.path.insert(1,'/home/ht/HPSDataLogger/i2clibraries')
-import asyncio
-import csv
-from datetime import datetime
 from i2c_adxl345 import *
 from i2c_itg3205 import *
-from pathlib import Path
 import pynmea2
 import serial
 import time
@@ -20,39 +18,9 @@ def flattenDict(d, parent_key='', sep='_'):
             items.append((flat_key, val))
     return dict(items)
 
-class Logger:
-    def __init__(self):
-        now = datetime.now()
-        current_time = now.strftime("%Y-%m-%d-%H-%M-%S")
-        self.data_record = {
-            "timestamp": time.time(),
-            "accel": {
-                "x": float('nan'),
-                "y": float('nan'),
-                "z": float('nan')
-            },
-            "gyro": {
-                "x": float('nan'),
-                "y": float('nan'),
-                "z": float('nan')
-            },
-            "temp": float('nan'),
-            "gps": {
-                "timestamp": float('nan'),
-                "latitude": float('nan'),
-                "longitude": float('nan'),
-                "altitude": float('nan')
-            }
-        }
-
-        # === Write csv header ===
-        data_directory = Path("/home/ht/HPSDataLogger/data/")
-        data_directory.mkdir(parents=True, exist_ok=True)
-        self.data_file = data_directory / f"{current_time}.csv"
-        header = list(flattenDict(self.data_record).keys())
-        with open(self.data_file, 'a') as f:
-            writer = csv.writer(f)
-            writer.writerow(header)
+class RaspberryPiLogger(ILogger):
+    def __init__(self, data_dir="/home/ht/HPSDataLogger/data/"):
+        super().__init__(data_dir=data_dir)
 
         # === Initialize sensors ===
         self.adxl345 = i2c_adxl345(0)
@@ -85,16 +53,3 @@ class Logger:
                 self.data_record["gps"]["longitude"] = gps_msg.longitude
         except:
             pass
-
-    def storeRecord(self):
-        flat_record = flattenDict(self.data_record)
-        data_values = list(flat_record.values())
-        with open(self.data_file, 'a') as f:
-            writer = csv.writer(f)
-            writer.writerow(data_values)
-
-    async def loggingLoop(self, interval):
-        while True:
-            self.readSensors()
-            self.storeRecord()
-            await asyncio.sleep(interval)

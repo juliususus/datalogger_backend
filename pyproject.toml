@@ -1,0 +1,17 @@
+[project]
+name = "datalogger-backend"
+version = "0.1.0"
+description = "Backend of the HPS data logger responsible for collecting the sensor data and supplying the data to the frontend."
+authors = [
+    {name = "ywcb00",email = "ywcb00@ywcb.org"}
+]
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "flask (>=3.1.2,<4.0.0)"
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
