@@ -1,6 +1,5 @@
 from logger.ILogger import ILogger
 from utils import coordinatesToSpeed
-import copy
 
 import random
 import time
@@ -21,10 +20,10 @@ class MockLogger(ILogger):
 
     # === Acquisition logic ===
     def readSensors(self):
-        previousGPS = self.data_record["gps"]
+        previous_gps = self.data_record["gps"]
         self.data_record["timestamp"] = time.time()
         self.data_record["accel"] = {"x": random.uniform(-100, 100), "y": random.uniform(-100, 100), "z": random.uniform(-100, 100)}
         self.data_record["gyro"] = {"x": random.uniform(0, 360), "y": random.uniform(0, 360), "z": random.uniform(0, 360)}
         self.data_record["temp"] = random.uniform(10, 30)
         self.data_record["gps"] = {"timestamp": time.time(), "latitude": random.uniform(46.991007, 46.991004), "longitude": random.uniform(15.42088, 15.420909), "altitude": random.uniform(0, 394)}
-        self.data_record["sog"] = coordinatesToSpeed(previousGPS["latitude"], previousGPS["longitude"], previousGPS["timestamp"], self.data_record["gps"]["latitude"], self.data_record["gps"]["longitude"], self.data_record["gps"]["timestamp"])
+        self.data_record["sog"] = coordinatesToSpeed(previous_gps["latitude"], previous_gps["longitude"], previous_gps["timestamp"], self.data_record["gps"]["latitude"], self.data_record["gps"]["longitude"], self.data_record["gps"]["timestamp"])

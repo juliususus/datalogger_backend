@@ -32,7 +32,7 @@ class RaspberryPiLogger(ILogger):
     # === Acquisition logic ===
     def readSensors(self):
         try:
-            previousGPS = self.data_record["gps"]
+            prevoious_gps = self.data_record["gps"]
             
             self.data_record["timestamp"] = time.time()
 
@@ -54,6 +54,6 @@ class RaspberryPiLogger(ILogger):
                 gps_msg = pynmea2.parse(gps_data)
                 self.data_record["gps"]["latitude"] = gps_msg.latitude
                 self.data_record["gps"]["longitude"] = gps_msg.longitude
-            self.data_record["sog"] = coordinatesToSpeed(previousGPS["latitude"], previousGPS["longitude"], previousGPS["timestamp"], self.data_record["gps"]["latitude"], self.data_record["gps"]["longitude"], self.data_record["gps"]["timestamp"])
+            self.data_record["sog"] = coordinatesToSpeed(prevoious_gps["latitude"], prevoious_gps["longitude"], prevoious_gps["timestamp"], self.data_record["gps"]["latitude"], self.data_record["gps"]["longitude"], self.data_record["gps"]["timestamp"])
         except:
             pass

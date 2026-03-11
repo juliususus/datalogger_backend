@@ -35,5 +35,4 @@ def coordinatesToSpeed(lat1, lon1, timestamp1, lat2, lon2, timestamp2):
     except ZeroDivisionError:
         return 0
 
-
     return speed_knots
